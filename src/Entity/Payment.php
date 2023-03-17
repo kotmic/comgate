@@ -7,6 +7,7 @@ use Brick\Money\Money;
 use Contributte\Comgate\Entity\Codes\CountryCode;
 use Contributte\Comgate\Entity\Codes\LangCode;
 use Contributte\Comgate\Entity\Codes\PaymentMethodCode;
+use function array_merge;
 
 class Payment extends AbstractEntity
 {
@@ -35,7 +36,7 @@ class Payment extends AbstractEntity
 	/** @var string */
 	private $payerId;
 
-	/** @var string */
+	/** @var string|NULL */
 	private $account;
 
 	/** @var string */
@@ -262,18 +263,28 @@ class Payment extends AbstractEntity
 	 */
 	public function toArray(): array
 	{
-		return [
-			'price' => $this->price,
-			'curr' => $this->curr,
-			'label' => $this->label,
-			'refId' => $this->refId,
-			'method' => $this->method,
-			'email' => $this->email,
-			'prepareOnly' => $this->prepareOnly ? 'true' : 'false',
-			'country' => $this->country,
-			'lang' => $this->lang,
-			'embedded' => $this->embedded ? 'true' : 'false',
-		];
+        $arrayWithAccount = [];
+
+        if ($this->account !== NULL) {
+            $arrayWithAccount = [
+                'account' => $this->account,
+            ];
+        }
+
+        $result = array_merge($arrayWithAccount, [
+            'price' => $this->price,
+            'curr' => $this->curr,
+            'label' => $this->label,
+            'refId' => $this->refId,
+            'method' => $this->method,
+            'email' => $this->email,
+            'prepareOnly' => $this->prepareOnly ? 'true' : 'false',
+            'country' => $this->country,
+            'lang' => $this->lang,
+            'embedded' => $this->embedded ? 'true' : 'false',
+        ]);
+
+		return $result;
 	}
 
 }
